@@ -13,14 +13,19 @@ Mobile-first static trip planner for the Hong Kong birthday trip, August 26–29
 ## Local development
 
 ```bash
-npm install
-npm run dev
+mise install
+pnpm install
+pnpm dev
 ```
+
+`mise.toml` pins the Node.js and pnpm versions used by this project. If mise is
+not activated in your shell yet, run commands with `mise exec --`, for example
+`mise exec -- pnpm dev`.
 
 ## Build
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ## Trip highlights
