@@ -223,13 +223,13 @@ function App() {
 
   return (
     <main className="min-h-screen bg-[#f5efe5] text-[#18211c]">
-      <section id="today" className="relative overflow-hidden bg-[#153b2e] px-5 pb-10 pt-8 text-white sm:px-8 sm:pb-14 sm:pt-12">
+      <section id="today" className="safe-gutter hero-section relative overflow-hidden bg-[#153b2e] px-5 pb-10 pt-8 text-white sm:px-8 sm:pb-14 sm:pt-12">
         <div className="hero-glow hero-glow-one" />
         <div className="hero-glow hero-glow-two" />
         <div className="relative mx-auto max-w-6xl">
           <div className="flex items-center justify-between gap-4">
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-[#f8c950]">Hong Kong · 2026</p>
-            <button onClick={jumpToToday} className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black text-white">回到今天</button>
+            <button onClick={jumpToToday} className="home-button rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black text-white">回到今天</button>
           </div>
 
           <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
@@ -252,10 +252,10 @@ function App() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <InfoCard label="TRIP" value="8/26–8/29 · 4 days" />
             <InfoCard label="BIRTHDAY" value="8/27 · Disneyland" />
-            <InfoCard label="READY" value={`${confirmationCount}/${confirmations.length} 項已確認`} />
+            <InfoCard className="col-span-2 sm:col-span-1" label="READY" value={`${confirmationCount}/${confirmations.length} 項已確認`} />
           </div>
 
           <figure className="mt-6 overflow-hidden rounded-[1.75rem] border border-white/10 bg-black/15 p-1.5 shadow-2xl sm:mt-8 sm:rounded-[2.25rem] sm:p-2">
@@ -270,8 +270,8 @@ function App() {
         </div>
       </section>
 
-      <nav className="sticky top-0 z-30 border-b border-black/5 bg-[#f5efe5]/92 px-4 py-3 backdrop-blur-xl sm:px-8">
-        <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto text-sm font-black scrollbar-none">
+      <nav aria-label="頁面區段" className="safe-gutter sticky top-0 z-30 border-b border-black/5 bg-[#f5efe5]/92 px-4 py-2 backdrop-blur-xl sm:px-8 sm:py-3">
+        <div className="mobile-nav mx-auto grid max-w-6xl grid-cols-5 gap-1 text-xs font-black sm:flex sm:gap-2 sm:text-sm">
           <a className="nav-pill" href="#today">現在</a>
           <a className="nav-pill" href="#itinerary">行程</a>
           <a className="nav-pill" href="#plan-b">Plan B</a>
@@ -280,7 +280,7 @@ function App() {
         </div>
       </nav>
 
-      <section id="plan-b" className="mx-auto max-w-6xl px-5 pt-10 sm:px-8 sm:pt-14">
+      <section id="plan-b" className="safe-gutter mx-auto max-w-6xl px-5 pt-10 sm:px-8 sm:pt-14">
         <SectionTitle eyebrow="QUICK ADJUST" title="現在的旅行狀態" description="情況有變就切換模式，每個行程會顯示對應備案。" />
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {(Object.keys(modeCopy) as TravelMode[]).map((key) => (
@@ -296,7 +296,7 @@ function App() {
         </div>
       </section>
 
-      <section id="itinerary" className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+      <section id="itinerary" className="safe-gutter mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <SectionTitle eyebrow="ITINERARY" title="四天行程" description="完成、跳過與延後都會保存在這支手機。" />
           <p className="w-fit rounded-full bg-[#dceadf] px-4 py-2 text-xs font-black text-[#24513e]">{completedCount}/{day.items.length} 已完成</p>
@@ -343,12 +343,12 @@ function App() {
                     </div>
                   )}
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {item.location && <a className="action-button action-primary" href={mapUrl(item.location)} target="_blank" rel="noreferrer">導航 ↗</a>}
+                  <div className="timeline-actions mt-4">
+                    {item.location && <a className="action-button action-primary action-map" href={mapUrl(item.location)} target="_blank" rel="noreferrer">導航 ↗</a>}
                     <button className={`action-button ${status === 'done' ? 'action-selected' : ''}`} onClick={() => updateStatus(item.id, 'done')}>✓ 完成</button>
                     <button className={`action-button ${status === 'later' ? 'action-selected' : ''}`} onClick={() => updateStatus(item.id, 'later')}>延後</button>
                     <button className={`action-button ${status === 'skipped' ? 'action-selected' : ''}`} onClick={() => updateStatus(item.id, 'skipped')}>跳過</button>
-                    {item.planB && mode === 'normal' && <button className="action-button" onClick={() => setOpenPlan(openPlan === item.id ? null : item.id)}>{openPlan === item.id ? '收起備案' : 'Plan B'}</button>}
+                    {item.planB && mode === 'normal' && <button className="action-button action-plan" onClick={() => setOpenPlan(openPlan === item.id ? null : item.id)}>{openPlan === item.id ? '收起備案' : 'Plan B'}</button>}
                   </div>
                 </div>
               )
@@ -357,7 +357,7 @@ function App() {
         </article>
       </section>
 
-      <section id="confirmations" className="bg-[#e6dbc8] px-5 py-12 sm:px-8 sm:py-16">
+      <section id="confirmations" className="safe-gutter bg-[#e6dbc8] px-5 py-12 sm:px-8 sm:py-16">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <SectionTitle eyebrow="FRESHNESS CHECK" title="出發前確認中心" description="有時效的資訊不要靠記憶；點進官方來源後，記錄最後確認日期。" />
@@ -380,7 +380,7 @@ function App() {
         </div>
       </section>
 
-      <section id="airport" className="px-5 py-12 sm:px-8 sm:py-16">
+      <section id="airport" className="safe-gutter px-5 py-12 sm:px-8 sm:py-16">
         <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] bg-[#c94932] text-white lg:grid-cols-[.9fr_1.1fr]">
           <div className="p-6 sm:p-9">
             <p className="text-xs font-black tracking-[0.18em] text-[#ffd9c6]">AIRPORT CLOCK</p>
@@ -402,7 +402,7 @@ function App() {
         </div>
       </section>
 
-      <section className="px-5 pb-14 sm:px-8">
+      <section className="safe-gutter px-5 pb-14 sm:px-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 rounded-[2rem] border border-black/5 bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div>
             <p className="font-black">離線也能看</p>
@@ -412,13 +412,13 @@ function App() {
         </div>
       </section>
 
-      <footer className="border-t border-black/5 px-5 py-8 text-center text-xs text-black/35">Hong Kong Birthday Trip · Aug 26–29, 2026</footer>
+      <footer className="safe-gutter safe-footer border-t border-black/5 px-5 py-8 text-center text-xs text-black/35">Hong Kong Birthday Trip · Aug 26–29, 2026</footer>
     </main>
   )
 }
 
-function InfoCard({ label, value }: { label: string; value: string }) {
-  return <div className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="text-[10px] font-black tracking-[0.2em] text-white/45">{label}</p><p className="mt-2 text-sm font-bold">{value}</p></div>
+function InfoCard({ label, value, className = '' }: { label: string; value: string; className?: string }) {
+  return <div className={`rounded-2xl border border-white/10 bg-white/5 p-4 ${className}`}><p className="text-[10px] font-black tracking-[0.2em] text-white/45">{label}</p><p className="mt-2 text-sm font-bold">{value}</p></div>
 }
 
 function SectionTitle({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
