@@ -1,0 +1,15 @@
+{
+  "name": "Hong Kong Birthday Trip 2026",
+  "short_name": "HK Trip",
+  "description": "香港生日旅行的即時行程、導航、Plan B 與出發確認。",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#f5efe5",
+  "theme_color": "#153b2e",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

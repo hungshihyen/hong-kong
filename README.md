@@ -2,6 +2,16 @@
 
 Mobile-first static trip planner for the Hong Kong birthday trip, August 26–29, 2026.
 
+## Traveller features
+
+- Today mode with the next stop and trip countdown
+- One-tap Google Maps navigation
+- Local completion, skip, and postpone states
+- Rain, tired, and long-queue Plan B modes
+- Time-sensitive confirmation checklist
+- Airport departure countdown
+- Installable offline PWA
+
 ## Stack
 
 - React
@@ -32,7 +42,7 @@ pnpm build
 
 - 8/26: Arrival, Victoria Harbour, Hong Kong food
 - 8/27: Birthday at Hong Kong Disneyland
-- 8/28: Traditional dim sum, Central/Sheung Wan, H1 Heritage Tour
+- 8/28: Traditional dim sum, Tai Kwun and Old Town Central walk, H1 Heritage Tour
 - 8/29: Egg tarts, Lemon King, last meal, airport
 
 Restaurant hours, H1 schedules and Disney show times should be reconfirmed shortly before departure.
