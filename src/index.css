@@ -256,6 +256,51 @@ button { font: inherit; }
   line-height: 1.65;
 }
 
+.taxi-backup {
+  margin-top: .75rem;
+  border: 1px solid rgb(201 73 50 / .16);
+  border-radius: .9rem;
+  background: #fff8f3;
+  padding: .85rem;
+  color: rgb(61 36 28 / .72);
+  font-size: .75rem;
+  line-height: 1.65;
+}
+
+.taxi-backup p { margin: 0; }
+.taxi-backup p + p { margin-top: .4rem; }
+
+.taxi-backup-title {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: #9b3d2c;
+  font-weight: 900;
+}
+
+.taxi-backup-title span {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border-radius: .55rem;
+  background: #c94932;
+  color: white;
+  font-size: .65rem;
+}
+
+.taxi-backup a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  margin-top: .65rem;
+  align-items: center;
+  border-radius: .75rem;
+  background: #fee1d7;
+  padding: .5rem .75rem;
+  color: #9b3d2c;
+  font-weight: 900;
+}
+
 .transport-map-link {
   display: flex;
   min-height: 2.75rem;

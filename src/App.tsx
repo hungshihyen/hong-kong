@@ -33,6 +33,7 @@ type TransportInfo = {
   headline: string
   steps: string[]
   note?: string
+  taxiBackup?: string
   mapMode?: 'walking' | 'transit' | 'driving'
 }
 
@@ -125,6 +126,7 @@ const transports: Record<string, TransportInfo> = {
       '由迪士尼站 A 出口前往公共運輸交匯處，搭免費接駁車至 Hollywood Hotel。',
     ],
     note: '全程可使用電梯與大型閘機；帶行李時在青衣站與欣澳站依無障礙指標轉乘。',
+    taxiBackup: '若行李很多、有人不舒服或鐵路服務異常，可在機場排班區搭紅色市區的士直達 Disney Hollywood Hotel，正常路況約 20–25 分鐘。',
     mapMode: 'transit',
   },
   'd1-adc': {
@@ -140,6 +142,7 @@ const transports: Record<string, TransportInfo> = {
       '荔景站轉荃灣綫往中環方向，於佐敦站下車。',
       '由 C2 出口步行約 3 分鐘至白加士街 47 號。',
     ],
+    taxiBackup: '若接駁或港鐵轉乘不順，可請飯店協助叫紅色市區的士，直接前往「佐敦白加士街 47 號・澳洲牛奶公司」，正常路況約 35–45 分鐘。',
     mapMode: 'transit',
   },
   'd1-harbour': {
@@ -172,6 +175,7 @@ const transports: Record<string, TransportInfo> = {
     duration: '約 15–20 分',
     headline: '尖沙咀站 → 佐敦站 C2',
     steps: ['步行至尖沙咀站，搭荃灣綫往荃灣方向。', '佐敦站下車，由 C2 出口步行至白加士街。'],
+    taxiBackup: '若看完燈光秀後很累，可在尖沙咀海旁上車，向司機出示「佐敦白加士街 51 號・麥文記麵家」，正常路況約 8–12 分鐘。',
     mapMode: 'transit',
   },
   'd1-kai': {
@@ -197,6 +201,7 @@ const transports: Record<string, TransportInfo> = {
       '公共運輸交匯處搭免費飯店接駁車回 Hollywood Hotel。',
     ],
     note: '晚間移動請預留轉乘與候車時間，並在出發前確認迪士尼綫末班車。',
+    taxiBackup: '若錯過末班車或體力不足，可由佐敦搭紅色市區的士直達 Disney Hollywood Hotel，正常路況約 30–40 分鐘。',
     mapMode: 'transit',
   },
   'd2-breakfast': {
@@ -271,6 +276,7 @@ const transports: Record<string, TransportInfo> = {
       '由 A1 出口步行約 4 分鐘至 The Fleming。',
     ],
     note: '這段帶行李且轉乘較多，青衣／欣澳與香港站均優先依電梯及大型閘機指標移動。',
+    taxiBackup: '若行李多或轉乘狀況不佳，可請 Disney 飯店協助叫紅色市區的士，直達「灣仔菲林明道 41 號・The Fleming」，正常路況約 35–45 分鐘。',
     mapMode: 'transit',
   },
   'd3-dimsum': {
@@ -291,6 +297,7 @@ const transports: Record<string, TransportInfo> = {
     headline: '經中環街市與半山扶手電梯上行至大館',
     steps: ['往中環街市方向步行，接上中環至半山自動扶手電梯。', '於荷李活道附近離開扶手電梯，步行至大館入口。'],
     note: '這段為上坡動線，善用半山扶手電梯可明顯減少爬坡。',
+    taxiBackup: '若不適合走上坡，可由蓮香樓搭紅色市區的士至「大館・荷李活道入口」，正常路況約 5–10 分鐘。',
     mapMode: 'walking',
   },
   'd3-kaukee': {
@@ -328,6 +335,7 @@ const transports: Record<string, TransportInfo> = {
     headline: '士丹利街 → 中環站／IFC → 中環 8 號碼頭',
     steps: ['沿皇后大道中往中環站方向步行。', '經 IFC 行人天橋系統往中環碼頭。', '依指標前往 8 號碼頭與中環（天星碼頭）巴士總站。'],
     note: '如果前面行程延誤，停止繞行並依導航走最短路線直達 8 號碼頭。',
+    taxiBackup: '若接近 H1 發車時間，可由一樂搭紅色市區的士至「中環 8 號碼頭／天星碼頭巴士總站」，正常路況約 8–12 分鐘。',
     mapMode: 'walking',
   },
   'd3-h1': {
@@ -357,6 +365,7 @@ const transports: Record<string, TransportInfo> = {
     duration: '約 25–30 分',
     headline: '佐敦站 → 金鐘站轉車 → 灣仔站 A1',
     steps: ['步行至佐敦站 A 出口。', '搭荃灣綫往中環方向，於金鐘站下車。', '金鐘站轉港島綫往柴灣方向，於灣仔站下車。', '由 A1 出口步行約 4 分鐘回 The Fleming。'],
+    taxiBackup: '若晚間港鐵服務異常或兩人都很疲累，可由廟街搭紅色市區的士過海，直達「灣仔菲林明道 41 號・The Fleming」，正常路況約 20–30 分鐘。',
     mapMode: 'transit',
   },
   'd4-bakehouse': {
@@ -414,6 +423,7 @@ const transports: Record<string, TransportInfo> = {
     headline: '灣仔站 → 中環／香港站 → 機場快綫機場站',
     steps: ['從飯店步行至灣仔站 A1 出口。', '搭港島綫往堅尼地城方向，於中環站下車。', '依站內「香港站／機場快綫」指標，經連通通道步行轉乘。', '香港站搭機場快綫，於機場站下車。', '依航空公司資訊前往一號客運大樓報到櫃檯。'],
     note: '帶行李時在中環／香港站依「機場快綫」與電梯指標前進；連通通道較長，建議另外預留 10 分鐘。',
+    taxiBackup: '若機場快綫停駛、行李移動困難或已接近最晚出發時間，可由飯店搭紅色市區的士直達香港機場一號客運大樓，正常路況約 35–50 分鐘；尖峰時段需再預留塞車時間。',
     mapMode: 'transit',
   },
   'd4-flight': {
@@ -452,6 +462,15 @@ const directionsUrl = (transport: TransportInfo) => {
     origin: transport.from,
     destination: transport.to,
     travelmode: transport.mapMode ?? 'transit',
+  })
+  return `https://www.google.com/maps/dir/?${params.toString()}`
+}
+const taxiDirectionsUrl = (transport: TransportInfo) => {
+  const params = new URLSearchParams({
+    api: '1',
+    origin: transport.from,
+    destination: transport.to,
+    travelmode: 'driving',
   })
   return `https://www.google.com/maps/dir/?${params.toString()}`
 }
@@ -707,6 +726,13 @@ function App() {
                           {transport.steps.map((step, index) => <li key={`${item.id}-transport-${index}`}>{step}</li>)}
                         </ol>
                         {transport.note && <p className="transport-note"><span className="font-black">補充：</span>{transport.note}</p>}
+                        {transport.taxiBackup && (
+                          <div className="taxi-backup">
+                            <p className="taxi-backup-title"><span aria-hidden="true">的</span>計程車／的士備案</p>
+                            <p>{transport.taxiBackup}</p>
+                            <a href={taxiDirectionsUrl(transport)} target="_blank" rel="noreferrer">開啟叫車路線 ↗</a>
+                          </div>
+                        )}
                         <a className="transport-map-link" href={directionsUrl(transport)} target="_blank" rel="noreferrer">開啟點到點導航 ↗</a>
                       </div>
                     </details>
