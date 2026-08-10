@@ -40,6 +40,7 @@ type TransportInfo = {
 type DiningInfo = {
   estimate: string
   payment: string
+  cashNeed: string
   basis: string
   note?: string
 }
@@ -447,79 +448,85 @@ const transports: Record<string, TransportInfo> = {
 const diningInfo: Record<string, DiningInfo> = {
   'd1-adc': {
     estimate: 'HK$150–220／兩人',
-    payment: '只收港幣現金',
+    payment: '準備港幣現金',
+    cashNeed: 'HK$150–220',
     basis: '兩份早餐／茶餐、兩杯飲品，加一份燉奶共享。',
     note: '目前資料顯示每人約 HK$50–80；多點甜品或單點炒蛋時預算會再增加。',
   },
   'd1-mak': {
     estimate: 'HK$150–230／兩人',
-    payment: '港幣現金最保險',
+    payment: '準備港幣現金',
+    cashNeed: 'HK$150–230',
     basis: '兩碗鮮蝦雲吞麵、一份蠔油芥蘭；有胃口再加一份南乳豬手。',
     note: '傳統麵店的電子付款可能調整，進店前先看收銀處標示。',
   },
   'd1-kai': {
     estimate: 'HK$65–95／兩人',
-    payment: '港幣現金最保險',
+    payment: '準備港幣現金',
+    cashNeed: 'HK$65–95',
     basis: '每人一碗糖水；一般款約 HK$29 起，楊枝甘露等較高價。',
-  },
-  'd2-breakfast': {
-    estimate: '已含早餐：HK$0；另購約 HK$650–720／兩人',
-    payment: 'Visa／Mastercard／AE／JCB／銀聯／八達通／港幣現金',
-    basis: '以 Hollywood Hotel 藝彩廚兩位成人自助早餐估算，約每位 HK$318–328，另視方案是否已含服務費。',
-    note: '先查看訂房確認信；若房價已含兩人早餐，不要重複購買。',
   },
   'd2-disney': {
     estimate: 'HK$400–600／兩人／園內餐飲',
-    payment: 'Visa／Mastercard／AE／JCB／銀聯／八達通／Alipay／WeChat Pay／港幣現金',
+    payment: '刷信用卡',
+    cashNeed: 'HK$0',
     basis: '兩份園內套餐約 HK$160 上下，加兩杯飲品與 1–2 份共享點心。',
     note: '不含門票與商品；若早餐吃得飽，可把午餐改成輕食，預算降到約 HK$300–400。',
   },
   'd2-dinner': {
     estimate: 'HK$950–1,250／兩人',
-    payment: 'Visa／Mastercard／AE／JCB／銀聯／八達通／港幣現金',
+    payment: '刷信用卡',
+    cashNeed: 'HK$0',
     basis: '以兩人 Disney Friends 點心套餐或相近份量晚餐估算，已預留 10% 服務費與基本飲品。',
     note: '角色點心須至少提前 24 小時預訂；加點主菜、酒精飲品或生日蛋糕會超出此範圍。',
   },
   'd3-dimsum': {
     estimate: 'HK$280–420／兩人',
-    payment: 'Visa／Mastercard／AE／銀聯／八達通／Apple Pay／PayMe／Alipay／WeChat Pay／港幣現金',
+    payment: '刷信用卡',
+    cashNeed: 'HK$0',
     basis: '兩人共享 5–6 籠／碟點心，加茶位與可能的 10% 服務費。',
     note: '上環店目前各類點心約 HK$30–48；拿點心前先看點心卡級別。',
   },
   'd3-kaukee': {
     estimate: 'HK$160–230／兩人',
-    payment: '港幣現金最保險',
+    payment: '準備港幣現金',
+    cashNeed: 'HK$160–230',
     basis: '一碗上湯牛爽腩伊麵、一碗咖喱牛筋腩河粉，加一份飲品或小食。',
     note: '老店付款規則可能臨時調整；排隊前確認身上至少有 HK$250 現金。',
   },
   'd3-yatlok': {
     estimate: 'HK$300–420／兩人',
-    payment: '港幣現金最保險',
+    payment: '準備港幣現金',
+    cashNeed: 'HK$300–420',
     basis: '共享 1/4 隻燒鵝、兩份白飯或瀨粉，加一份青菜。',
     note: '若改成每人燒鵝飯而非 1/4 隻單點，通常可控制在 HK$180–260。',
   },
   'd3-kowloon': {
     estimate: 'HK$180–320／兩人',
-    payment: '現金與八達通最實用；各攤位不同',
+    payment: '現金／八達通',
+    cashNeed: 'HK$180–320',
     basis: '兩人共享一份煲仔飯，再加 2–3 款街頭小吃或兩碗糖水。',
     note: '街市與小店不一定接受信用卡，建議保留至少 HK$350 現金。',
   },
   'd4-bakehouse': {
     estimate: 'HK$140–240／兩人',
-    payment: 'Visa／Mastercard／AE／銀聯／八達通／Apple Pay／Google Pay／Alipay／WeChat Pay／港幣現金',
+    payment: '刷信用卡',
+    cashNeed: 'HK$0',
     basis: '現場兩個蛋撻與兩杯飲品，再外帶一盒 6 個蛋撻或其他麵包。',
     note: '若只現場吃兩個蛋撻、不買伴手禮，約 HK$30–80。',
   },
   'd4-capital': {
     estimate: 'HK$130–200／兩人',
-    payment: '港幣現金最保險；電子付款依門市標示',
+    payment: '準備港幣現金',
+    cashNeed: 'HK$130–200',
     basis: '兩份早餐／多士類餐點與兩杯奶茶；黑松露炒蛋或額外菠蘿油會接近上限。',
   },
   'd4-lastmeal': {
     estimate: '預留 HK$250–450／兩人',
-    payment: '店家未定；同時準備信用卡與港幣現金',
+    payment: '優先選可刷卡店家',
+    cashNeed: 'HK$0',
     basis: '以一般灣仔茶餐廳、燒味或粉麵店的兩人最後一餐作預算上限。',
-    note: '選定店家後才能更新精確付款方式；若改吃前三天的遺珠，再以該店資訊為準。',
+    note: '若最後改吃現金店家，請從緩衝金支出，或再增加約 HK$250–450 現金。',
   },
 }
 
@@ -754,6 +761,18 @@ function App() {
           <p className="w-fit rounded-full bg-[#dceadf] px-4 py-2 text-xs font-black text-[#24513e]">{completedCount}/{day.items.length} 已完成</p>
         </div>
 
+        <div className="cash-summary mt-7">
+          <div>
+            <p className="cash-summary-eyebrow">兩人換匯建議</p>
+            <p className="cash-summary-total">準備 HK$2,000 現金</p>
+            <p className="cash-summary-note">早餐已預訂；Disney、可刷卡餐廳、港鐵與機場快綫均不計入現金。</p>
+          </div>
+          <div className="cash-summary-breakdown">
+            <p><span>現金型餐飲</span><strong>HK$1,135–1,715</strong></p>
+            <p><span>零用／交通緩衝</span><strong>HK$285–865</strong></p>
+          </div>
+        </div>
+
         <div className="mt-7 grid grid-cols-4 gap-2" role="tablist" aria-label="選擇行程日期">
           {days.map((candidate, index) => (
             <button key={candidate.id} role="tab" aria-selected={selectedDay === index} onClick={() => setSelectedDay(index)} className={`day-tab ${selectedDay === index ? 'day-tab-active' : ''}`}>
@@ -799,8 +818,12 @@ function App() {
                           <p className="dining-price">{dining.estimate}</p>
                         </div>
                         <div>
-                          <p className="dining-label">付款方式</p>
+                          <p className="dining-label">建議付款</p>
                           <p className="dining-payment">{dining.payment}</p>
+                        </div>
+                        <div className="dining-cash-block">
+                          <p className="dining-label">需準備現金</p>
+                          <p className={`dining-cash ${dining.cashNeed === 'HK$0' ? 'dining-cash-zero' : ''}`}>{dining.cashNeed}</p>
                         </div>
                       </div>
                       <div className="dining-basis">

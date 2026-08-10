@@ -83,6 +83,60 @@ button { font: inherit; }
 
 .day-tab-active { border-color: #153b2e; background: #153b2e; color: white; }
 
+.cash-summary {
+  display: grid;
+  gap: 1.25rem;
+  overflow: hidden;
+  border-radius: 1.6rem;
+  background: #153b2e;
+  padding: 1.35rem;
+  color: white;
+  box-shadow: 0 18px 40px rgb(21 59 46 / .16);
+}
+
+.cash-summary-eyebrow {
+  margin: 0;
+  color: #f8c950;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.cash-summary-total {
+  margin: .35rem 0 0;
+  font-size: 1.55rem;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.cash-summary-note {
+  max-width: 37rem;
+  margin: .55rem 0 0;
+  color: rgb(255 255 255 / .68);
+  font-size: .75rem;
+  line-height: 1.65;
+}
+
+.cash-summary-breakdown {
+  display: grid;
+  gap: .65rem;
+  border-radius: 1rem;
+  background: rgb(255 255 255 / .08);
+  padding: .9rem 1rem;
+}
+
+.cash-summary-breakdown p {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  font-size: .72rem;
+}
+
+.cash-summary-breakdown span { color: rgb(255 255 255 / .6); }
+.cash-summary-breakdown strong { color: white; font-size: .8rem; }
+
 .timeline-item { border-bottom: 1px solid rgb(24 33 28 / .07); padding: 1.35rem .25rem 1.5rem; transition: opacity .2s ease; }
 .timeline-item:last-child { border-bottom: 0; }
 .timeline-done { opacity: .58; }
@@ -178,6 +232,16 @@ button { font: inherit; }
   line-height: 1.6;
 }
 
+.dining-cash {
+  margin: .25rem 0 0;
+  color: #9b3d2c;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.4;
+}
+
+.dining-cash-zero { color: #24513e; }
+
 .dining-basis {
   display: grid;
   gap: .5rem;
@@ -199,6 +263,23 @@ button { font: inherit; }
 .dining-basis span {
   color: #9b3d2c;
   font-weight: 900;
+}
+
+@media (min-width: 640px) {
+  .cash-summary {
+    grid-template-columns: minmax(0, 1.35fr) minmax(17rem, .65fr);
+    align-items: center;
+    padding: 1.6rem 1.75rem;
+  }
+
+  .dining-grid { grid-template-columns: 1fr .8fr .8fr; }
+
+  .dining-grid > div + div {
+    border-top: 0;
+    border-left: 1px solid rgb(201 73 50 / .1);
+    padding-top: 0;
+    padding-left: 1rem;
+  }
 }
 
 .transport-card {
