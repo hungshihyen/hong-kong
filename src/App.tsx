@@ -257,6 +257,16 @@ function App() {
             <InfoCard label="BIRTHDAY" value="8/27 · Disneyland" />
             <InfoCard label="READY" value={`${confirmationCount}/${confirmations.length} 項已確認`} />
           </div>
+
+          <figure className="mt-6 overflow-hidden rounded-[1.75rem] border border-white/10 bg-black/15 p-1.5 shadow-2xl sm:mt-8 sm:rounded-[2.25rem] sm:p-2">
+            <img
+              src={`${import.meta.env.BASE_URL}trip-poster.jpg`}
+              alt="香港 2026 生日旅行海報：維港天際線、開篷巴士、城堡、生日蛋糕與蛋撻"
+              className="h-auto w-full rounded-[1.4rem] sm:rounded-[1.8rem]"
+              decoding="async"
+              fetchPriority="high"
+            />
+          </figure>
         </div>
       </section>
 
