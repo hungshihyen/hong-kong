@@ -136,6 +136,71 @@ button { font: inherit; }
 .action-primary { border-color: #153b2e; background: #153b2e; color: white; }
 .action-selected { border-color: #f8c950; background: #f8c950; color: #3d320c; }
 
+.dining-card {
+  overflow: hidden;
+  border: 1px solid rgb(201 73 50 / .13);
+  border-radius: 1.15rem;
+  background: #fffaf6;
+}
+
+.dining-grid {
+  display: grid;
+  gap: .85rem;
+  padding: 1rem;
+}
+
+.dining-grid > div + div {
+  border-top: 1px solid rgb(201 73 50 / .1);
+  padding-top: .85rem;
+}
+
+.dining-label {
+  margin: 0;
+  color: #c94932;
+  font-size: .65rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.dining-price {
+  margin: .25rem 0 0;
+  color: #3d241c;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.dining-payment {
+  margin: .25rem 0 0;
+  color: rgb(61 36 28 / .72);
+  font-size: .75rem;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+.dining-basis {
+  display: grid;
+  gap: .5rem;
+  border-top: 1px solid rgb(201 73 50 / .1);
+  background: white;
+  padding: .85rem 1rem;
+}
+
+.dining-basis p {
+  display: grid;
+  grid-template-columns: 3.4rem 1fr;
+  gap: .35rem;
+  margin: 0;
+  color: rgb(24 33 28 / .58);
+  font-size: .72rem;
+  line-height: 1.6;
+}
+
+.dining-basis span {
+  color: #9b3d2c;
+  font-weight: 900;
+}
+
 .transport-card {
   overflow: hidden;
   border: 1px solid rgb(21 59 46 / .12);
@@ -339,6 +404,8 @@ button { font: inherit; }
   .action-button { padding-inline: 1rem; }
   .timeline-actions { display: flex; flex-wrap: wrap; }
   .timeline-actions .action-button { width: auto; }
+  .dining-grid { grid-template-columns: .8fr 1.2fr; }
+  .dining-grid > div + div { border-top: 0; border-left: 1px solid rgb(201 73 50 / .1); padding-top: 0; padding-left: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
