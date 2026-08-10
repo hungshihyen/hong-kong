@@ -28,7 +28,7 @@ type TripDay = {
 type TransportInfo = {
   from: string
   to: string
-  method: '步行' | '港鐵' | '計程車' | '飯店接駁' | '巴士' | '混合交通'
+  method: '步行' | '港鐵' | '飯店接駁' | '巴士' | '混合交通'
   duration: string
   headline: string
   steps: string[]
@@ -114,16 +114,18 @@ const transports: Record<string, TransportInfo> = {
   'd1-hotel': {
     from: '香港國際機場一號客運大樓',
     to: "Disney's Hollywood Hotel Hong Kong",
-    method: '計程車',
-    duration: '約 20–25 分',
-    headline: '機場排班計程車 → Disney Hollywood Hotel',
+    method: '混合交通',
+    duration: '約 50–60 分',
+    headline: '機場站 → 青衣站 → 欣澳站 → 迪士尼站＋飯店接駁',
     steps: [
-      '入境大堂依「的士 Taxi」指標前往排班區。',
-      '搭紅色市區計程車，向司機出示「香港迪士尼好萊塢酒店」。',
-      '有大型行李時，兩人直達飯店比多次轉乘更省力。',
+      '入境大堂依「機場快綫 Airport Express」指標前往機場站。',
+      '機場站上車，搭機場快綫至青衣站下車。',
+      '青衣站轉東涌綫往東涌方向，於欣澳站下車。',
+      '欣澳站轉迪士尼綫，於迪士尼站下車。',
+      '由迪士尼站 A 出口前往公共運輸交匯處，搭免費接駁車至 Hollywood Hotel。',
     ],
-    note: '公共交通備選：機場站搭機場快綫至青衣站 → 轉東涌綫往東涌方向至欣澳站 → 轉迪士尼綫至迪士尼站 → 於公共運輸交匯處搭免費飯店接駁車。',
-    mapMode: 'driving',
+    note: '全程可使用電梯與大型閘機；帶行李時在青衣站與欣澳站依無障礙指標轉乘。',
+    mapMode: 'transit',
   },
   'd1-adc': {
     from: "Disney's Hollywood Hotel Hong Kong",
@@ -194,7 +196,7 @@ const transports: Record<string, TransportInfo> = {
       '欣澳站轉迪士尼綫，於迪士尼站下車。',
       '公共運輸交匯處搭免費飯店接駁車回 Hollywood Hotel。',
     ],
-    note: '晚間移動請預留轉乘與候車時間；若太累，可由佐敦直接搭計程車回飯店。',
+    note: '晚間移動請預留轉乘與候車時間，並在出發前確認迪士尼綫末班車。',
     mapMode: 'transit',
   },
   'd2-breakfast': {
@@ -257,12 +259,19 @@ const transports: Record<string, TransportInfo> = {
   'd3-fleming': {
     from: "Disney's Hollywood Hotel Hong Kong",
     to: 'The Fleming Hong Kong',
-    method: '計程車',
-    duration: '約 35–45 分',
-    headline: '帶行李建議計程車直達 The Fleming',
-    steps: ['飯店櫃檯協助叫紅色市區計程車。', '向司機出示「灣仔菲林明道 41 號・芬名酒店」。'],
-    note: '港鐵備選：飯店接駁至迪士尼站 → 迪士尼綫至欣澳 → 東涌綫至香港站 → 步行連通中環站 → 港島綫至灣仔站 → A1 出口步行約 4 分鐘。帶行李全程約 75–90 分鐘。',
-    mapMode: 'driving',
+    method: '混合交通',
+    duration: '約 75–90 分',
+    headline: '飯店接駁＋迪士尼站 → 欣澳站 → 香港／中環站 → 灣仔站 A1',
+    steps: [
+      'Hollywood Hotel 搭免費接駁車至迪士尼公共運輸交匯處。',
+      '迪士尼站上車，搭迪士尼綫至欣澳站。',
+      '欣澳站轉東涌綫往香港方向，於香港站下車。',
+      '依站內「中環站／港島綫」指標經連通通道轉乘。',
+      '中環站搭港島綫往柴灣方向，於灣仔站下車。',
+      '由 A1 出口步行約 4 分鐘至 The Fleming。',
+    ],
+    note: '這段帶行李且轉乘較多，青衣／欣澳與香港站均優先依電梯及大型閘機指標移動。',
+    mapMode: 'transit',
   },
   'd3-dimsum': {
     from: 'The Fleming Hong Kong',
@@ -281,7 +290,7 @@ const transports: Record<string, TransportInfo> = {
     duration: '約 15–20 分',
     headline: '經中環街市與半山扶手電梯上行至大館',
     steps: ['往中環街市方向步行，接上中環至半山自動扶手電梯。', '於荷李活道附近離開扶手電梯，步行至大館入口。'],
-    note: '這段為上坡動線；不想走坡可直接搭計程車至大館。',
+    note: '這段為上坡動線，善用半山扶手電梯可明顯減少爬坡。',
     mapMode: 'walking',
   },
   'd3-kaukee': {
@@ -318,7 +327,7 @@ const transports: Record<string, TransportInfo> = {
     duration: '約 18–22 分',
     headline: '士丹利街 → 中環站／IFC → 中環 8 號碼頭',
     steps: ['沿皇后大道中往中環站方向步行。', '經 IFC 行人天橋系統往中環碼頭。', '依指標前往 8 號碼頭與中環（天星碼頭）巴士總站。'],
-    note: '如果前面行程延誤，直接搭計程車並說「中環八號碼頭／天星碼頭巴士總站」。',
+    note: '如果前面行程延誤，停止繞行並依導航走最短路線直達 8 號碼頭。',
     mapMode: 'walking',
   },
   'd3-h1': {
@@ -404,7 +413,7 @@ const transports: Record<string, TransportInfo> = {
     duration: '約 45–60 分',
     headline: '灣仔站 → 中環／香港站 → 機場快綫機場站',
     steps: ['從飯店步行至灣仔站 A1 出口。', '搭港島綫往堅尼地城方向，於中環站下車。', '依站內「香港站／機場快綫」指標，經連通通道步行轉乘。', '香港站搭機場快綫，於機場站下車。', '依航空公司資訊前往一號客運大樓報到櫃檯。'],
-    note: '帶行李更省力的做法：從飯店搭計程車至香港站，再轉機場快綫；若市區交通延誤則直接搭計程車到機場。',
+    note: '帶行李時在中環／香港站依「機場快綫」與電梯指標前進；連通通道較長，建議另外預留 10 分鐘。',
     mapMode: 'transit',
   },
   'd4-flight': {
@@ -799,7 +808,6 @@ function transportIcon(method: TransportInfo['method']) {
   if (method === '步行') return '步'
   if (method === '港鐵') return '鐵'
   if (method === '巴士') return '巴'
-  if (method === '計程車') return '的'
   if (method === '飯店接駁') return '接'
   return '轉'
 }
