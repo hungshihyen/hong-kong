@@ -136,6 +136,140 @@ button { font: inherit; }
 .action-primary { border-color: #153b2e; background: #153b2e; color: white; }
 .action-selected { border-color: #f8c950; background: #f8c950; color: #3d320c; }
 
+.transport-card {
+  overflow: hidden;
+  border: 1px solid rgb(21 59 46 / .12);
+  border-radius: 1.15rem;
+  background: #f2f7f3;
+}
+
+.transport-summary {
+  display: flex;
+  min-height: 4.75rem;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  gap: .75rem;
+  padding: .85rem;
+}
+
+.transport-summary::-webkit-details-marker { display: none; }
+
+.transport-summary:focus-visible {
+  outline: 3px solid rgb(248 201 80 / .75);
+  outline-offset: -3px;
+}
+
+.transport-icon {
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: .85rem;
+  background: #153b2e;
+  color: white;
+  font-size: .75rem;
+  font-weight: 900;
+}
+
+.transport-chevron {
+  flex: 0 0 auto;
+  color: rgb(24 33 28 / .45);
+  font-size: 1.25rem;
+  font-weight: 900;
+  transition: transform .2s ease;
+}
+
+.transport-card[open] .transport-chevron { transform: rotate(180deg); }
+
+.transport-details {
+  border-top: 1px solid rgb(21 59 46 / .1);
+  padding: 1rem;
+}
+
+.transport-endpoints {
+  display: grid;
+  gap: .45rem;
+  border-radius: .9rem;
+  background: white;
+  padding: .85rem;
+  font-size: .75rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.transport-endpoints p { display: grid; grid-template-columns: 2.5rem 1fr; gap: .35rem; margin: 0; }
+.transport-endpoints span { color: #c94932; font-weight: 900; }
+
+.transport-steps {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: transport-step;
+}
+
+.transport-steps li {
+  position: relative;
+  min-height: 2.15rem;
+  padding: .05rem 0 .7rem 2.1rem;
+  color: rgb(24 33 28 / .68);
+  font-size: .78rem;
+  font-weight: 650;
+  line-height: 1.6;
+  counter-increment: transport-step;
+}
+
+.transport-steps li::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  width: 1.45rem;
+  height: 1.45rem;
+  place-items: center;
+  border-radius: 9999px;
+  background: #dceadf;
+  color: #24513e;
+  content: counter(transport-step);
+  font-size: .65rem;
+  font-weight: 900;
+}
+
+.transport-steps li:not(:last-child)::after {
+  position: absolute;
+  left: .69rem;
+  top: 1.5rem;
+  width: 1px;
+  height: calc(100% - 1.25rem);
+  background: rgb(21 59 46 / .15);
+  content: '';
+}
+
+.transport-note {
+  margin: .35rem 0 0;
+  border-radius: .9rem;
+  background: #fff3cf;
+  padding: .8rem;
+  color: #5d4310;
+  font-size: .75rem;
+  line-height: 1.65;
+}
+
+.transport-map-link {
+  display: flex;
+  min-height: 2.75rem;
+  margin-top: .75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: .85rem;
+  background: #153b2e;
+  padding: .55rem .8rem;
+  color: white;
+  font-size: .75rem;
+  font-weight: 900;
+}
+
 .confirmation-card {
   display: flex;
   min-height: 5.25rem;

@@ -25,6 +25,17 @@ type TripDay = {
   items: TripItem[]
 }
 
+type TransportInfo = {
+  from: string
+  to: string
+  method: '步行' | '港鐵' | '計程車' | '飯店接駁' | '巴士' | '混合交通'
+  duration: string
+  headline: string
+  steps: string[]
+  note?: string
+  mapMode?: 'walking' | 'transit' | 'driving'
+}
+
 const days: TripDay[] = [
   {
     id: 'day-1',
@@ -99,6 +110,314 @@ const days: TripDay[] = [
   },
 ]
 
+const transports: Record<string, TransportInfo> = {
+  'd1-hotel': {
+    from: '香港國際機場一號客運大樓',
+    to: "Disney's Hollywood Hotel Hong Kong",
+    method: '計程車',
+    duration: '約 20–25 分',
+    headline: '機場排班計程車 → Disney Hollywood Hotel',
+    steps: [
+      '入境大堂依「的士 Taxi」指標前往排班區。',
+      '搭紅色市區計程車，向司機出示「香港迪士尼好萊塢酒店」。',
+      '有大型行李時，兩人直達飯店比多次轉乘更省力。',
+    ],
+    note: '公共交通備選：機場站搭機場快綫至青衣站 → 轉東涌綫往東涌方向至欣澳站 → 轉迪士尼綫至迪士尼站 → 於公共運輸交匯處搭免費飯店接駁車。',
+    mapMode: 'driving',
+  },
+  'd1-adc': {
+    from: "Disney's Hollywood Hotel Hong Kong",
+    to: 'Australia Dairy Company Hong Kong',
+    method: '混合交通',
+    duration: '約 55–65 分',
+    headline: '飯店接駁＋港鐵：迪士尼站 → 佐敦站 C2',
+    steps: [
+      '飯店搭免費接駁車至迪士尼公共運輸交匯處。',
+      '迪士尼站上車，搭迪士尼綫至欣澳站。',
+      '欣澳站轉東涌綫往香港方向，於荔景站下車。',
+      '荔景站轉荃灣綫往中環方向，於佐敦站下車。',
+      '由 C2 出口步行約 3 分鐘至白加士街 47 號。',
+    ],
+    mapMode: 'transit',
+  },
+  'd1-harbour': {
+    from: 'Australia Dairy Company Hong Kong',
+    to: 'Avenue of Stars Hong Kong',
+    method: '港鐵',
+    duration: '約 18–22 分',
+    headline: '佐敦站 → 尖沙咀站，往東尖沙咀 J2 出口',
+    steps: [
+      '步行回佐敦站 C2 出口。',
+      '佐敦站上車，搭荃灣綫往中環方向 1 站。',
+      '尖沙咀站下車，依「東尖沙咀／星光大道」指標走地下通道。',
+      '由 J2 出口前往星光大道與維港海旁。',
+    ],
+    mapMode: 'transit',
+  },
+  'd1-symphony': {
+    from: 'Avenue of Stars Hong Kong',
+    to: 'Tsim Sha Tsui Promenade',
+    method: '步行',
+    duration: '約 5–10 分',
+    headline: '沿維港海旁步行至文化中心一帶觀賞區',
+    steps: ['沿星光大道向香港文化中心／鐘樓方向步行。', '不需搭車，選視野未被樹木與建築遮擋的位置即可。'],
+    mapMode: 'walking',
+  },
+  'd1-mak': {
+    from: 'Tsim Sha Tsui Promenade',
+    to: 'Mak Man Kee Noodle Shop Hong Kong',
+    method: '港鐵',
+    duration: '約 15–20 分',
+    headline: '尖沙咀站 → 佐敦站 C2',
+    steps: ['步行至尖沙咀站，搭荃灣綫往荃灣方向。', '佐敦站下車，由 C2 出口步行至白加士街。'],
+    mapMode: 'transit',
+  },
+  'd1-kai': {
+    from: 'Mak Man Kee Noodle Shop Hong Kong',
+    to: 'Kai Kai Dessert Hong Kong',
+    method: '步行',
+    duration: '約 3–5 分',
+    headline: '沿白加士街步行至寧波街',
+    steps: ['從麥文記沿白加士街向北走。', '右轉寧波街即可抵達佳佳甜品，不需搭車。'],
+    mapMode: 'walking',
+  },
+  'd1-return': {
+    from: 'Kai Kai Dessert Hong Kong',
+    to: "Disney's Hollywood Hotel Hong Kong",
+    method: '混合交通',
+    duration: '約 55–65 分',
+    headline: '佐敦站 → 荔景站 → 欣澳站 → 迪士尼站',
+    steps: [
+      '步行至佐敦站 C2 出口。',
+      '佐敦站搭荃灣綫往荃灣方向，於荔景站轉車。',
+      '荔景站轉東涌綫往東涌方向，於欣澳站下車。',
+      '欣澳站轉迪士尼綫，於迪士尼站下車。',
+      '公共運輸交匯處搭免費飯店接駁車回 Hollywood Hotel。',
+    ],
+    note: '晚間移動請預留轉乘與候車時間；若太累，可由佐敦直接搭計程車回飯店。',
+    mapMode: 'transit',
+  },
+  'd2-breakfast': {
+    from: "Disney's Hollywood Hotel 客房",
+    to: "Disney's Hollywood Hotel 餐廳",
+    method: '步行',
+    duration: '館內約 3–5 分',
+    headline: '客房 → 飯店早餐餐廳',
+    steps: ['依飯店館內指標前往早餐餐廳；吃完回房拿隨身物品再出發。'],
+    mapMode: 'walking',
+  },
+  'd2-disney': {
+    from: "Disney's Hollywood Hotel Hong Kong",
+    to: 'Hong Kong Disneyland',
+    method: '飯店接駁',
+    duration: '約 10–15 分',
+    headline: 'Hollywood Hotel 上車 → 迪士尼公共運輸交匯處下車',
+    steps: ['飯店門口搭免費度假區接駁車。', '於迪士尼公共運輸交匯處下車。', '步行約 3–5 分鐘至樂園安檢與入口。'],
+    note: '官方接駁車通常每 10–20 分鐘一班，車程約 5–7 分鐘。',
+    mapMode: 'transit',
+  },
+  'd2-birthday': {
+    from: 'Hong Kong Disneyland Park Entrance',
+    to: 'Hong Kong Disneyland Castle',
+    method: '步行',
+    duration: '園內移動',
+    headline: '樂園內依官方 App 地圖步行',
+    steps: ['所有生日拍照、遊行與設施皆在園區內，以官方 App 地圖安排步行順序。'],
+    mapMode: 'walking',
+  },
+  'd2-dinner': {
+    from: 'Hong Kong Disneyland',
+    to: 'Crystal Lotus Hong Kong Disneyland Hotel',
+    method: '飯店接駁',
+    duration: '約 15–20 分',
+    headline: '樂園出口 → 公共運輸交匯處 → 香港迪士尼樂園酒店',
+    steps: ['離開樂園後步行至公共運輸交匯處。', '搭免費度假區接駁車，於香港迪士尼樂園酒店下車。', '進入飯店後依「晶荷軒 Crystal Lotus」指標前往餐廳。'],
+    note: '若步行，沿 Park Promenade 約需 15–20 分鐘。',
+    mapMode: 'transit',
+  },
+  'd2-momentous': {
+    from: 'Crystal Lotus Hong Kong Disneyland Hotel',
+    to: 'Castle of Magical Dreams Hong Kong Disneyland',
+    method: '飯店接駁',
+    duration: '約 20–30 分',
+    headline: '迪士尼樂園酒店 → 公共運輸交匯處 → 樂園城堡',
+    steps: ['飯店搭免費接駁車回迪士尼公共運輸交匯處。', '步行至樂園入口並重新安檢入園。', '入園後沿美國小鎮大街前往奇妙夢想城堡。'],
+    note: '訂生日晚餐時必須確認用餐結束後仍可趕上重新入園與 Momentous；沒訂晶荷軒則留在園內即可。',
+    mapMode: 'transit',
+  },
+  'd3-checkout': {
+    from: "Disney's Hollywood Hotel 客房",
+    to: "Disney's Hollywood Hotel 大廳",
+    method: '步行',
+    duration: '館內約 5 分',
+    headline: '客房 → 飯店大廳辦理退房',
+    steps: ['帶齊行李至飯店大廳 Check-out；出發前再檢查護照、票券與充電設備。'],
+    mapMode: 'walking',
+  },
+  'd3-fleming': {
+    from: "Disney's Hollywood Hotel Hong Kong",
+    to: 'The Fleming Hong Kong',
+    method: '計程車',
+    duration: '約 35–45 分',
+    headline: '帶行李建議計程車直達 The Fleming',
+    steps: ['飯店櫃檯協助叫紅色市區計程車。', '向司機出示「灣仔菲林明道 41 號・芬名酒店」。'],
+    note: '港鐵備選：飯店接駁至迪士尼站 → 迪士尼綫至欣澳 → 東涌綫至香港站 → 步行連通中環站 → 港島綫至灣仔站 → A1 出口步行約 4 分鐘。帶行李全程約 75–90 分鐘。',
+    mapMode: 'driving',
+  },
+  'd3-dimsum': {
+    from: 'The Fleming Hong Kong',
+    to: 'Lin Heung Lau Hong Kong',
+    method: '港鐵',
+    duration: '約 20–25 分',
+    headline: '灣仔站 A1 → 上環站 A2',
+    steps: ['從飯店步行約 4 分鐘至灣仔站 A1 出口。', '灣仔站搭港島綫往堅尼地城方向。', '上環站下車，由 A2 出口步行約 5 分鐘至蓮香樓。'],
+    note: '蓮香樓地址曾調整，出發前請用下方導航確認當日店址。',
+    mapMode: 'transit',
+  },
+  'd3-taikwun': {
+    from: 'Lin Heung Lau Hong Kong',
+    to: 'Tai Kwun Hong Kong',
+    method: '步行',
+    duration: '約 15–20 分',
+    headline: '經中環街市與半山扶手電梯上行至大館',
+    steps: ['往中環街市方向步行，接上中環至半山自動扶手電梯。', '於荷李活道附近離開扶手電梯，步行至大館入口。'],
+    note: '這段為上坡動線；不想走坡可直接搭計程車至大館。',
+    mapMode: 'walking',
+  },
+  'd3-kaukee': {
+    from: 'Tai Kwun Hong Kong',
+    to: 'Kau Kee Food Cafe Hong Kong',
+    method: '步行',
+    duration: '約 6–10 分',
+    headline: '大館 → 奧卑利街 → 歌賦街',
+    steps: ['由大館荷李活道出口離開。', '沿奧卑利街往歌賦街方向下行至九記牛腩。'],
+    mapMode: 'walking',
+  },
+  'd3-oldtown': {
+    from: 'Kau Kee Food Cafe Hong Kong',
+    to: 'PMQ Hong Kong',
+    method: '步行',
+    duration: '約 5 分',
+    headline: '歌賦街 → 鴨巴甸街 → PMQ',
+    steps: ['從歌賦街步行至鴨巴甸街。', '沿鴨巴甸街上行至 PMQ 元創方。'],
+    mapMode: 'walking',
+  },
+  'd3-yatlok': {
+    from: 'PMQ Hong Kong',
+    to: 'Yat Lok Restaurant Hong Kong',
+    method: '步行',
+    duration: '約 8–10 分',
+    headline: 'PMQ → 荷李活道／擺花街 → 士丹利街',
+    steps: ['由 PMQ 往中環方向下坡。', '依步行導航前往士丹利街的一樂燒鵝。'],
+    mapMode: 'walking',
+  },
+  'd3-pier': {
+    from: 'Yat Lok Restaurant Hong Kong',
+    to: 'Central Ferry Pier 8 Hong Kong',
+    method: '步行',
+    duration: '約 18–22 分',
+    headline: '士丹利街 → 中環站／IFC → 中環 8 號碼頭',
+    steps: ['沿皇后大道中往中環站方向步行。', '經 IFC 行人天橋系統往中環碼頭。', '依指標前往 8 號碼頭與中環（天星碼頭）巴士總站。'],
+    note: '如果前面行程延誤，直接搭計程車並說「中環八號碼頭／天星碼頭巴士總站」。',
+    mapMode: 'walking',
+  },
+  'd3-h1': {
+    from: 'Central Ferry Pier 8 Hong Kong',
+    to: 'The Peninsula Hong Kong',
+    method: '巴士',
+    duration: '全程依當日班次',
+    headline: 'H1：中環（天星碼頭）上車 → 尖沙咀（漢口道）下車',
+    steps: ['由 8 號碼頭步行至中環（天星碼頭）巴士總站。', '搭城巴 H1「懷舊之旅」，上車前確認方向為尖沙咀。', '沿途經上環、中環、灣仔、銅鑼灣及維港景點。', '於尖沙咀漢口道、半島酒店附近下車。'],
+    note: 'H1 班次、上車月台與開篷車安排可能臨時調整，當天以城巴官方資訊為準。',
+    mapMode: 'transit',
+  },
+  'd3-kowloon': {
+    from: 'The Peninsula Hong Kong',
+    to: 'Temple Street Night Market Hong Kong',
+    method: '港鐵',
+    duration: '約 15–20 分',
+    headline: '尖沙咀站 → 佐敦站 A 出口',
+    steps: ['從 H1 下車點步行至尖沙咀站。', '搭荃灣綫往荃灣方向 1 站，於佐敦站下車。', '由 A 出口步行約 6–8 分鐘至廟街夜市。'],
+    note: '若想繼續看街景，也可由尖沙咀步行至佐敦，約 20–25 分鐘。',
+    mapMode: 'transit',
+  },
+  'd3-return': {
+    from: 'Temple Street Night Market Hong Kong',
+    to: 'The Fleming Hong Kong',
+    method: '港鐵',
+    duration: '約 25–30 分',
+    headline: '佐敦站 → 金鐘站轉車 → 灣仔站 A1',
+    steps: ['步行至佐敦站 A 出口。', '搭荃灣綫往中環方向，於金鐘站下車。', '金鐘站轉港島綫往柴灣方向，於灣仔站下車。', '由 A1 出口步行約 4 分鐘回 The Fleming。'],
+    mapMode: 'transit',
+  },
+  'd4-bakehouse': {
+    from: 'The Fleming Hong Kong',
+    to: 'Bakehouse Wan Chai Hong Kong',
+    method: '步行',
+    duration: '約 8–10 分',
+    headline: '菲林明道 → 莊士敦道 → 大王東街',
+    steps: ['從飯店沿菲林明道往南走。', '經莊士敦道前往大王東街 14 號 Bakehouse。'],
+    note: 'Bakehouse 位於灣仔站 B2 出口步行約 4 分鐘的位置。',
+    mapMode: 'walking',
+  },
+  'd4-capital': {
+    from: 'Bakehouse Wan Chai Hong Kong',
+    to: 'Capital Cafe Wan Chai Hong Kong',
+    method: '步行',
+    duration: '約 10–15 分',
+    headline: 'Bakehouse → 灣仔華星冰室',
+    steps: ['由大王東街步行回軒尼詩道北側街區。', '依步行導航前往華星冰室；不需搭港鐵。'],
+    mapMode: 'walking',
+  },
+  'd4-lemon': {
+    from: 'Capital Cafe Wan Chai Hong Kong',
+    to: 'Lemon King Hong Kong',
+    method: '港鐵',
+    duration: '約 18–25 分',
+    headline: '灣仔站 → 上環站 E1',
+    steps: ['步行至灣仔站，搭港島綫往堅尼地城方向。', '於上環站下車，由 E1 出口右轉。', '步行約 2 分鐘至永吉街 18 號檸檬王。'],
+    mapMode: 'transit',
+  },
+  'd4-lastmeal': {
+    from: 'Lemon King Hong Kong',
+    to: 'Wan Chai Hong Kong',
+    method: '港鐵',
+    duration: '約 15–20 分',
+    headline: '上環站 E1 → 灣仔站',
+    steps: ['由檸檬王步行回上環站 E1。', '搭港島綫往柴灣方向，於灣仔站下車。', '最後一餐尚未指定店家，確定後依導航選最接近的出口。'],
+    note: '為了準時取行李，最後一餐建議選在灣仔站或 The Fleming 步行 10 分鐘內。',
+    mapMode: 'transit',
+  },
+  'd4-luggage': {
+    from: 'Wan Chai Hong Kong',
+    to: 'The Fleming Hong Kong',
+    method: '步行',
+    duration: '約 5–10 分',
+    headline: '灣仔最後一餐 → The Fleming 取行李',
+    steps: ['選擇灣仔站附近餐廳，餐後直接步行回飯店。', '若最後一餐改到其他區域，13:15 前開啟導航返回飯店。'],
+    mapMode: 'walking',
+  },
+  'd4-airport': {
+    from: 'The Fleming Hong Kong',
+    to: 'Hong Kong International Airport',
+    method: '混合交通',
+    duration: '約 45–60 分',
+    headline: '灣仔站 → 中環／香港站 → 機場快綫機場站',
+    steps: ['從飯店步行至灣仔站 A1 出口。', '搭港島綫往堅尼地城方向，於中環站下車。', '依站內「香港站／機場快綫」指標，經連通通道步行轉乘。', '香港站搭機場快綫，於機場站下車。', '依航空公司資訊前往一號客運大樓報到櫃檯。'],
+    note: '帶行李更省力的做法：從飯店搭計程車至香港站，再轉機場快綫；若市區交通延誤則直接搭計程車到機場。',
+    mapMode: 'transit',
+  },
+  'd4-flight': {
+    from: 'Hong Kong International Airport Station',
+    to: 'Hong Kong International Airport Departures',
+    method: '步行',
+    duration: '約 10–15 分',
+    headline: '機場站 → 航空公司報到櫃檯 → 安檢／登機門',
+    steps: ['機場快綫下車後依航空公司與航班看板前往報到區。', '完成報到、托運與安檢後，再依即時看板前往登機門。'],
+    mapMode: 'walking',
+  },
+}
+
 const confirmations = [
   { id: 'h1', label: 'H1 班次、上車點與開篷安排', deadline: '8/27 前', url: 'https://www.hkcitysightseeing.com/' },
   { id: 'disney-hours', label: 'Disney 開園與 Momentous 時間', deadline: '8/26 前', url: 'https://www.hongkongdisneyland.com/calendars/day/' },
@@ -118,6 +437,15 @@ const modeCopy: Record<TravelMode, { label: string; icon: string; title: string;
 }
 
 const mapUrl = (location: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
+const directionsUrl = (transport: TransportInfo) => {
+  const params = new URLSearchParams({
+    api: '1',
+    origin: transport.from,
+    destination: transport.to,
+    travelmode: transport.mapMode ?? 'transit',
+  })
+  return `https://www.google.com/maps/dir/?${params.toString()}`
+}
 const tripStart = new Date('2026-08-26T00:00:00+08:00')
 const cityDeparture = new Date('2026-08-29T14:30:00+08:00')
 
@@ -190,6 +518,7 @@ function App() {
       return hours * 60 + minutes >= currentMinutes - 30
     }) ?? remaining[0]
   }, [isTripDay, liveDay, now, statuses])
+  const nextTransport = nextItem ? transports[nextItem.id] : undefined
 
   const completedCount = day.items.filter((item) => statuses[item.id] === 'done').length
   const confirmationCount = confirmations.filter((item) => checked[item.id]).length
@@ -246,8 +575,17 @@ function App() {
               </div>
               <h2 className="mt-5 text-2xl font-black">{nextItem?.place ?? '今天的行程完成了'}</h2>
               <p className="mt-2 text-sm leading-6 text-white/65">{nextItem?.note ?? '好好休息，明天再繼續。'}</p>
+              {nextTransport && (
+                <div className="mt-4 rounded-2xl border border-white/10 bg-black/10 p-4">
+                  <div className="flex items-center justify-between gap-3 text-xs font-black">
+                    <span className="text-[#f8c950]">{nextTransport.method}</span>
+                    <span className="text-white/55">{nextTransport.duration}</span>
+                  </div>
+                  <p className="mt-2 text-sm font-bold leading-6 text-white/85">{nextTransport.headline}</p>
+                </div>
+              )}
               {nextItem?.location && (
-                <a className="mt-5 flex min-h-12 items-center justify-center rounded-2xl bg-white px-4 text-sm font-black text-[#153b2e]" href={mapUrl(nextItem.location)} target="_blank" rel="noreferrer">開始導航 ↗</a>
+                <a className="mt-5 flex min-h-12 items-center justify-center rounded-2xl bg-white px-4 text-sm font-black text-[#153b2e]" href={nextTransport ? directionsUrl(nextTransport) : mapUrl(nextItem.location)} target="_blank" rel="noreferrer">{nextTransport ? '開啟點到點路線 ↗' : '開始導航 ↗'}</a>
               )}
             </div>
           </div>
@@ -298,7 +636,7 @@ function App() {
 
       <section id="itinerary" className="safe-gutter mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-          <SectionTitle eyebrow="ITINERARY" title="四天行程" description="完成、跳過與延後都會保存在這支手機。" />
+          <SectionTitle eyebrow="ITINERARY" title="四天行程" description="每一站都有點到點交通；點開交通卡可看上車站、轉乘、下車站與出口。" />
           <p className="w-fit rounded-full bg-[#dceadf] px-4 py-2 text-xs font-black text-[#24513e]">{completedCount}/{day.items.length} 已完成</p>
         </div>
 
@@ -324,6 +662,7 @@ function App() {
           <div className="px-4 py-2 sm:px-7">
             {day.items.map((item) => {
               const status = statuses[item.id]
+              const transport = transports[item.id]
               const showPlan = Boolean(item.planB && (openPlan === item.id || mode !== 'normal'))
               return (
                 <div key={item.id} className={`timeline-item ${status === 'done' ? 'timeline-done' : ''} ${status === 'skipped' ? 'timeline-skipped' : ''}`}>
@@ -336,6 +675,33 @@ function App() {
                   </div>
                   <h3 className="mt-3 text-lg font-black">{item.place}</h3>
                   <p className="mt-1 text-sm leading-6 text-black/55">{item.note}</p>
+
+                  {transport && (
+                    <details className="transport-card mt-4">
+                      <summary className="transport-summary">
+                        <span className="transport-icon" aria-hidden="true">{transportIcon(transport.method)}</span>
+                        <span className="min-w-0 flex-1">
+                          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className="text-xs font-black text-[#c94932]">從上一站前往</span>
+                            <span className="text-[11px] font-bold text-black/40">{transport.method} · {transport.duration}</span>
+                          </span>
+                          <span className="mt-1 block text-sm font-black leading-5 text-[#18211c]">{transport.headline}</span>
+                        </span>
+                        <span className="transport-chevron" aria-hidden="true">⌄</span>
+                      </summary>
+                      <div className="transport-details">
+                        <div className="transport-endpoints">
+                          <p><span>起點</span>{transport.from}</p>
+                          <p><span>終點</span>{transport.to}</p>
+                        </div>
+                        <ol className="transport-steps">
+                          {transport.steps.map((step, index) => <li key={`${item.id}-transport-${index}`}>{step}</li>)}
+                        </ol>
+                        {transport.note && <p className="transport-note"><span className="font-black">補充：</span>{transport.note}</p>}
+                        <a className="transport-map-link" href={directionsUrl(transport)} target="_blank" rel="noreferrer">開啟點到點導航 ↗</a>
+                      </div>
+                    </details>
+                  )}
 
                   {showPlan && (
                     <div className="mt-3 rounded-2xl bg-[#fff3cf] p-4 text-sm leading-6 text-[#5d4310]">
@@ -427,6 +793,15 @@ function SectionTitle({ eyebrow, title, description }: { eyebrow: string; title:
 
 function AirportStep({ time, title, note }: { time: string; title: string; note: string }) {
   return <li className="grid grid-cols-[56px_1fr] gap-3"><span className="text-sm font-black text-[#c94932]">{time}</span><div><p className="font-black">{title}</p><p className="mt-1 text-sm text-black/50">{note}</p></div></li>
+}
+
+function transportIcon(method: TransportInfo['method']) {
+  if (method === '步行') return '步'
+  if (method === '港鐵') return '鐵'
+  if (method === '巴士') return '巴'
+  if (method === '計程車') return '的'
+  if (method === '飯店接駁') return '接'
+  return '轉'
 }
 
 export default App
