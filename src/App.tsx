@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, MotionConfig } from 'motion/react'
+import IntroExperience from './components/IntroExperience'
 
 type ItemStatus = 'done' | 'skipped' | 'later'
 type TravelMode = 'normal' | 'rain' | 'tired' | 'queue'
@@ -579,6 +581,16 @@ const taxiDirectionsUrl = (transport: TransportInfo) => {
 }
 const tripStart = new Date('2026-08-26T00:00:00+08:00')
 const cityDeparture = new Date('2026-08-29T14:30:00+08:00')
+const introStorageKey = 'hk-trip-intro-seen-v1'
+
+function shouldShowIntro() {
+  try {
+    const forceReplay = new URLSearchParams(window.location.search).get('intro') === '1'
+    return forceReplay || localStorage.getItem(introStorageKey) !== 'true'
+  } catch {
+    return true
+  }
+}
 
 function useLocalStorage<T>(key: string, initialValue: T) {
   const [value, setValue] = useState<T>(() => {
@@ -622,12 +634,14 @@ function formatCountdown(target: Date, now: Date) {
 }
 
 function App() {
+  const [showIntro, setShowIntro] = useState(shouldShowIntro)
   const [selectedDay, setSelectedDay] = useState(defaultDayIndex)
   const [statuses, setStatuses] = useLocalStorage<Record<string, ItemStatus>>('hk-trip-statuses', {})
   const [mode, setMode] = useLocalStorage<TravelMode>('hk-trip-mode', 'normal')
   const [checked, setChecked] = useLocalStorage<Record<string, string>>('hk-trip-confirmations', {})
   const [openPlan, setOpenPlan] = useState<string | null>(null)
   const [now, setNow] = useState(() => new Date())
+  const shouldFocusAfterIntro = useRef(false)
   const day = days[selectedDay]
   const todayKey = hongKongDateKey(now)
   const isTripDay = days.some((candidate) => candidate.date === todayKey)
@@ -681,8 +695,40 @@ function App() {
     document.getElementById('today')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const dismissIntro = () => {
+    try {
+      localStorage.setItem(introStorageKey, 'true')
+    } catch {
+      // The intro can still be dismissed when browser storage is unavailable.
+    }
+    shouldFocusAfterIntro.current = true
+    setShowIntro(false)
+  }
+
+  const replayIntro = () => {
+    window.scrollTo({ top: 0 })
+    setShowIntro(true)
+  }
+
+  const handleIntroExitComplete = () => {
+    if (!shouldFocusAfterIntro.current) return
+    shouldFocusAfterIntro.current = false
+    document.getElementById('site-main-heading')?.focus()
+  }
+
   return (
-    <main className="min-h-screen bg-[#f5efe5] text-[#18211c]">
+    <MotionConfig reducedMotion="user">
+      <AnimatePresence onExitComplete={handleIntroExitComplete}>
+        {showIntro && (
+          <IntroExperience
+            key="hong-kong-trip-intro"
+            onComplete={dismissIntro}
+            posterSrc={`${import.meta.env.BASE_URL}trip-poster.jpg`}
+          />
+        )}
+      </AnimatePresence>
+
+      <main aria-hidden={showIntro || undefined} inert={showIntro || undefined} className="min-h-screen bg-[#f5efe5] text-[#18211c]">
       <section id="today" className="safe-gutter hero-section relative overflow-hidden bg-[#153b2e] px-5 pb-10 pt-8 text-white sm:px-8 sm:pb-14 sm:pt-12">
         <div className="hero-glow hero-glow-one" />
         <div className="hero-glow hero-glow-two" />
@@ -695,7 +741,7 @@ function App() {
           <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
             <div>
               <p className="text-sm font-bold text-[#b9d4c8]">{isTripDay ? `${liveDay.displayDate} · 旅途中` : tripCountdown ? `離出發還有 ${tripCountdown}` : '香港生日旅行'}</p>
-              <h1 className="mt-3 max-w-3xl text-4xl font-black leading-[1.05] sm:text-6xl">下一步，<br /><span className="text-[#f8c950]">就去這裡。</span></h1>
+              <h1 id="site-main-heading" tabIndex={-1} className="mt-3 max-w-3xl text-4xl font-black leading-[1.05] outline-none sm:text-6xl">下一步，<br /><span className="text-[#f8c950]">就去這裡。</span></h1>
               <p className="mt-5 max-w-xl text-sm leading-7 text-white/70 sm:text-base">打開就知道下一站、怎麼去，以及行程變動時該保留什麼。</p>
             </div>
 
@@ -952,8 +998,13 @@ function App() {
         </div>
       </section>
 
-      <footer className="safe-gutter safe-footer border-t border-black/5 px-5 py-8 text-center text-xs text-black/35">Hong Kong Birthday Trip · Aug 26–29, 2026</footer>
-    </main>
+        <footer className="safe-gutter safe-footer flex flex-col items-center justify-center gap-2 border-t border-black/5 px-5 py-8 text-center text-xs text-black/35 sm:flex-row sm:gap-3">
+          <span>Hong Kong Birthday Trip · Aug 26–29, 2026</span>
+          <span aria-hidden="true" className="hidden sm:inline">·</span>
+          <button type="button" onClick={replayIntro} className="min-h-11 rounded-full px-4 font-black text-[#24513e] transition-colors hover:bg-black/5 focus-visible:bg-black/5">重播開場</button>
+        </footer>
+      </main>
+    </MotionConfig>
   )
 }
 

@@ -14,8 +14,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
     "@tailwindcss/vite": "latest",
+    "@vitejs/plugin-react": "latest",
+    "motion": "^13.1.0",
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "latest"
