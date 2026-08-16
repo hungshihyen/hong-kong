@@ -1,20 +1,11 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import {
-  geoGraticule,
-  geoMercator,
-  geoPath,
-  type GeoPermissibleObjects,
-  type GeoProjection,
-} from 'd3-geo'
 import { Plane } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
-import { feature } from 'topojson-client'
-import worldAtlas from 'world-atlas/land-110m.json'
 import '../intro.css'
 
 type IntroExperienceProps = {
   onComplete: () => void
-  posterSrc: string
+  mapSrc: string
 }
 
 type Point = [number, number]
@@ -26,30 +17,12 @@ type FlightPath = {
 }
 type MapLayout = { width: number; height: number; path: FlightPath }
 
-const TPE: Point = [121.2328, 25.0777]
-const HKG: Point = [113.9185, 22.308]
+const MAP_WIDTH = 1521
+const MAP_HEIGHT = 732
+const TAIWAN_MAP_POINT: Point = [1162, 244]
+const HONG_KONG_MAP_POINT: Point = [250, 504]
 const INTRO_MS = 7000
 const REDUCED_MS = 900
-const viewport = {
-  type: 'Feature',
-  properties: null,
-  geometry: {
-    type: 'Polygon',
-    coordinates: [[
-      [111.1, 20.45],
-      [111.1, 27.15],
-      [123.55, 27.15],
-      [123.55, 20.45],
-      [111.1, 20.45],
-    ]],
-  },
-} as const
-
-const topology = worldAtlas as unknown as Parameters<typeof feature>[0]
-const landObject = (
-  worldAtlas as unknown as { objects: { land: unknown } }
-).objects.land
-const land = feature(topology, landObject as never)
 const travelTags = [
   ['🎂', 'Birthday'],
   ['🏰', 'Disney'],
@@ -57,28 +30,44 @@ const travelTags = [
   ['🥧', 'Egg tart'],
 ] as const
 
-function projectPoint(projection: GeoProjection, point: Point): Point {
-  const projected = projection(point)
-  return projected ? [projected[0], projected[1]] : [0, 0]
-}
-
-function createFlightPath(start: Point, end: Point, height: number): FlightPath {
+function createFlightPath(start: Point, end: Point, mapHeight: number): FlightPath {
   const dx = end[0] - start[0]
   const dy = end[1] - start[1]
   const distance = Math.hypot(dx, dy) || 1
   const normal: Point = [-dy / distance, dx / distance]
-  const arc = Math.min(distance * 0.3, height * 0.19)
+  const arc = Math.min(distance * 0.25, mapHeight * 0.32)
   return {
     start,
     controlOne: [
-      start[0] + dx * 0.28 + normal[0] * arc,
-      start[1] + dy * 0.28 + normal[1] * arc,
+      start[0] + dx * 0.3 + normal[0] * arc,
+      start[1] + dy * 0.3 + normal[1] * arc,
     ],
     controlTwo: [
-      start[0] + dx * 0.7 + normal[0] * arc,
-      start[1] + dy * 0.7 + normal[1] * arc,
+      start[0] + dx * 0.72 + normal[0] * arc,
+      start[1] + dy * 0.72 + normal[1] * arc,
     ],
     end,
+  }
+}
+
+function createMapLayout(width: number, height: number): MapLayout {
+  const scale = Math.min(width / MAP_WIDTH, height / MAP_HEIGHT)
+  const renderedWidth = MAP_WIDTH * scale
+  const renderedHeight = MAP_HEIGHT * scale
+  const offsetX = (width - renderedWidth) / 2
+  const offsetY = (height - renderedHeight) / 2
+  const project = ([x, y]: Point): Point => [
+    offsetX + x * scale,
+    offsetY + y * scale,
+  ]
+  return {
+    width,
+    height,
+    path: createFlightPath(
+      project(TAIWAN_MAP_POINT),
+      project(HONG_KONG_MAP_POINT),
+      renderedHeight,
+    ),
   }
 }
 
@@ -109,106 +98,12 @@ function angleOnPath(path: FlightPath, t: number) {
   return Math.atan2(dy, dx) * 180 / Math.PI
 }
 
-function drawLabel(
-  context: CanvasRenderingContext2D,
-  projection: GeoProjection,
-  label: string,
-  coordinates: Point,
-  land = false,
-) {
-  const position = projection(coordinates)
-  if (!position) return
-  context.save()
-  context.fillStyle = land
-    ? 'rgba(31, 51, 48, .58)'
-    : 'rgba(220, 230, 221, .48)'
-  context.font = `${land ? '' : 'italic '}600 9px Inter, system-ui, sans-serif`
-  context.textAlign = 'center'
-  context.fillText(label, position[0], position[1])
-  context.restore()
-}
-
-function paintMap(canvas: HTMLCanvasElement, width: number, height: number): MapLayout {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2.5)
-  canvas.width = Math.max(1, Math.round(width * dpr))
-  canvas.height = Math.max(1, Math.round(height * dpr))
-  canvas.style.width = `${width}px`
-  canvas.style.height = `${height}px`
-
-  const insetX = Math.max(18, Math.min(54, width * 0.055))
-  const insetY = Math.max(18, Math.min(48, height * 0.09))
-  const projection = geoMercator()
-    .fitExtent(
-      [[insetX, insetY], [width - insetX, height - insetY]],
-      viewport as unknown as GeoPermissibleObjects,
-    )
-    .clipExtent([[0, 0], [width, height]])
-  const flightPath = createFlightPath(
-    projectPoint(projection, TPE),
-    projectPoint(projection, HKG),
-    height,
-  )
-  const context = canvas.getContext('2d')
-  if (!context) return { width, height, path: flightPath }
-
-  context.setTransform(dpr, 0, 0, dpr, 0, 0)
-  context.clearRect(0, 0, width, height)
-  const ocean = context.createLinearGradient(0, 0, width, height)
-  ocean.addColorStop(0, '#0c2f42')
-  ocean.addColorStop(1, '#071d2c')
-  context.fillStyle = ocean
-  context.fillRect(0, 0, width, height)
-
-  const path = geoPath(projection, context)
-  const graticule = geoGraticule()
-    .extent([[111, 20], [124, 28]])
-    .step([2, 2])()
-  context.beginPath()
-  path(graticule)
-  context.strokeStyle = 'rgba(172, 201, 205, .14)'
-  context.lineWidth = 0.7
-  context.setLineDash([2, 5])
-  context.stroke()
-
-  context.beginPath()
-  path(land)
-  context.fillStyle = '#d9d4bd'
-  context.fill()
-  context.strokeStyle = 'rgba(252, 244, 218, .55)'
-  context.lineWidth = 0.75
-  context.setLineDash([])
-  context.stroke()
-
-  drawLabel(context, projection, 'GUANGDONG', [113.5, 24.4], true)
-  drawLabel(context, projection, 'TAIWAN', [121.05, 23.65], true)
-  drawLabel(context, projection, 'TAIWAN STRAIT', [118.2, 23.35])
-  drawLabel(context, projection, 'SOUTH CHINA SEA', [116.3, 20.9])
-
-  context.beginPath()
-  context.moveTo(flightPath.start[0], flightPath.start[1])
-  context.bezierCurveTo(
-    flightPath.controlOne[0],
-    flightPath.controlOne[1],
-    flightPath.controlTwo[0],
-    flightPath.controlTwo[1],
-    flightPath.end[0],
-    flightPath.end[1],
-  )
-  context.strokeStyle = 'rgba(255, 231, 172, .5)'
-  context.lineWidth = width < 520 ? 1.25 : 1.6
-  context.lineCap = 'round'
-  context.setLineDash(width < 520 ? [3, 6] : [4, 8])
-  context.stroke()
-
-  return { width, height, path: flightPath }
-}
-
 function createFlightFrames(path: FlightPath) {
   const x: number[] = []
   const y: number[] = []
   const rotate: number[] = []
-  for (let index = 0; index <= 72; index += 1) {
-    const linear = index / 72
+  for (let index = 0; index <= 84; index += 1) {
+    const linear = index / 84
     const progress = linear * linear * (3 - 2 * linear)
     const point = pointOnPath(path, progress)
     x.push(point[0])
@@ -218,14 +113,22 @@ function createFlightFrames(path: FlightPath) {
   return { x, y, rotate }
 }
 
-export default function IntroExperience({ onComplete }: IntroExperienceProps) {
+function pathData(path: FlightPath) {
+  return [
+    `M ${path.start[0]} ${path.start[1]}`,
+    `C ${path.controlOne[0]} ${path.controlOne[1]}`,
+    `${path.controlTwo[0]} ${path.controlTwo[1]}`,
+    `${path.end[0]} ${path.end[1]}`,
+  ].join(' ')
+}
+
+export default function IntroExperience({ onComplete, mapSrc }: IntroExperienceProps) {
   const reducedMotion = useReducedMotion() ?? false
   const onCompleteRef = useRef(onComplete)
   const completedRef = useRef(false)
   const timerRef = useRef<number | null>(null)
   const skipRef = useRef<HTMLButtonElement | null>(null)
   const stageRef = useRef<HTMLDivElement | null>(null)
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [layout, setLayout] = useState<MapLayout | null>(null)
 
   useEffect(() => {
@@ -268,12 +171,10 @@ export default function IntroExperience({ onComplete }: IntroExperienceProps) {
 
   useLayoutEffect(() => {
     const stage = stageRef.current
-    const canvas = canvasRef.current
-    if (!stage || !canvas) return
+    if (!stage) return
     const render = () => {
       const bounds = stage.getBoundingClientRect()
-      const next = paintMap(
-        canvas,
+      const next = createMapLayout(
         Math.max(1, Math.round(bounds.width)),
         Math.max(1, Math.round(bounds.height)),
       )
@@ -298,6 +199,7 @@ export default function IntroExperience({ onComplete }: IntroExperienceProps) {
     () => layout && pointOnPath(layout.path, 0.58),
     [layout],
   )
+  const route = useMemo(() => layout && pathData(layout.path), [layout])
 
   return (
     <motion.div
@@ -334,29 +236,46 @@ export default function IntroExperience({ onComplete }: IntroExperienceProps) {
 
         <motion.div
           className="intro-map-panel"
-          initial={{ opacity: 0, scale: reducedMotion ? 1 : 1.045 }}
+          initial={{ opacity: 0, scale: reducedMotion ? 1 : 1.035 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: reducedMotion ? 0.1 : 0.9, delay: reducedMotion ? 0 : 0.28 }}
         >
           <div ref={stageRef} className="intro-map-stage">
-            <canvas ref={canvasRef} className="intro-map-canvas" />
+            <img className="intro-map-backdrop" src={mapSrc} alt="" />
+            <img className="intro-map-image" src={mapSrc} alt="" />
             <div className="intro-map-compass"><span>N</span><i /></div>
-            <span className="intro-map-scale">300 KM</span>
+            <span className="intro-map-scale">TAIWAN · HONG KONG</span>
 
-            {layout && (
+            {layout && route && (
               <>
+                <svg
+                  className="intro-flight-route"
+                  width={layout.width}
+                  height={layout.height}
+                  viewBox={`0 0 ${layout.width} ${layout.height}`}
+                >
+                  <path className="intro-flight-route__shadow" d={route} />
+                  <motion.path
+                    className="intro-flight-route__line"
+                    d={route}
+                    initial={{ pathLength: reducedMotion ? 1 : 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: reducedMotion ? 0.1 : 3.7, delay: reducedMotion ? 0.05 : 1.2, ease: 'easeInOut' }}
+                  />
+                </svg>
+
                 <motion.div
                   className="intro-airport intro-airport--origin"
                   style={{ left: layout.path.start[0], top: layout.path.start[1] }}
                   initial={{ opacity: 0, scale: 0.72 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: reducedMotion ? 0.05 : 0.95 }}
+                  transition={{ duration: 0.4, delay: reducedMotion ? 0.05 : 0.92 }}
                 >
                   <span className="intro-airport__pulse" />
                   <span className="intro-airport__dot" />
                   <span className="intro-airport__label">
-                    <strong>Taipei / TPE</strong>
-                    <small>25.0777° N · 121.2328° E</small>
+                    <strong>Taiwan</strong>
+                    <small>出發 · 25.0777° N</small>
                   </span>
                 </motion.div>
 
@@ -370,8 +289,8 @@ export default function IntroExperience({ onComplete }: IntroExperienceProps) {
                   <span className="intro-airport__pulse" />
                   <span className="intro-airport__dot" />
                   <span className="intro-airport__label">
-                    <strong>Hong Kong / HKG</strong>
-                    <small>22.3080° N · 113.9185° E</small>
+                    <strong>Hong Kong</strong>
+                    <small>抵達 · 22.3080° N</small>
                   </span>
                 </motion.div>
 
@@ -399,11 +318,11 @@ export default function IntroExperience({ onComplete }: IntroExperienceProps) {
                       scale: [0.82, 1, 1, 0.92],
                     }}
                     transition={reducedMotion ? { duration: 0.12, delay: 0.12 } : {
-                      x: { duration: 3.6, delay: 1.34, ease: 'linear' },
-                      y: { duration: 3.6, delay: 1.34, ease: 'linear' },
-                      rotate: { duration: 3.6, delay: 1.34, ease: 'linear' },
-                      opacity: { duration: 3.6, delay: 1.34 },
-                      scale: { duration: 3.6, delay: 1.34 },
+                      x: { duration: 3.7, delay: 1.2, ease: 'linear' },
+                      y: { duration: 3.7, delay: 1.2, ease: 'linear' },
+                      rotate: { duration: 3.7, delay: 1.2, ease: 'linear' },
+                      opacity: { duration: 3.7, delay: 1.2 },
+                      scale: { duration: 3.7, delay: 1.2 },
                     }}
                   >
                     <span className="intro-plane__trail" />

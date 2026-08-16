@@ -581,7 +581,7 @@ const taxiDirectionsUrl = (transport: TransportInfo) => {
 }
 const tripStart = new Date('2026-08-26T00:00:00+08:00')
 const cityDeparture = new Date('2026-08-29T14:30:00+08:00')
-const introStorageKey = 'hk-trip-intro-seen-v2'
+const introStorageKey = 'hk-trip-intro-seen-v3'
 
 function shouldShowIntro() {
   try {
@@ -723,7 +723,7 @@ function App() {
           <IntroExperience
             key="hong-kong-trip-intro"
             onComplete={dismissIntro}
-            posterSrc={`${import.meta.env.BASE_URL}trip-poster.jpg`}
+            mapSrc={`${import.meta.env.BASE_URL}tw-hk.png`}
           />
         )}
       </AnimatePresence>
