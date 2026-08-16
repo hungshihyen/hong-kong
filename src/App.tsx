@@ -581,7 +581,7 @@ const taxiDirectionsUrl = (transport: TransportInfo) => {
 }
 const tripStart = new Date('2026-08-26T00:00:00+08:00')
 const cityDeparture = new Date('2026-08-29T14:30:00+08:00')
-const introStorageKey = 'hk-trip-intro-seen-v1'
+const introStorageKey = 'hk-trip-intro-seen-v2'
 
 function shouldShowIntro() {
   try {

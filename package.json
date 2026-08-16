@@ -16,14 +16,20 @@
   "dependencies": {
     "@tailwindcss/vite": "latest",
     "@vitejs/plugin-react": "latest",
+    "d3-geo": "^3.1.1",
+    "lucide-react": "^1.31.0",
     "motion": "^13.1.0",
     "react": "latest",
     "react-dom": "latest",
-    "tailwindcss": "latest"
+    "tailwindcss": "latest",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
+    "@types/d3-geo": "^3.1.1",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/topojson-client": "^3.1.5",
     "typescript": "latest",
     "vite": "latest"
   }
