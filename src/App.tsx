@@ -581,16 +581,6 @@ const taxiDirectionsUrl = (transport: TransportInfo) => {
 }
 const tripStart = new Date('2026-08-26T00:00:00+08:00')
 const cityDeparture = new Date('2026-08-29T14:30:00+08:00')
-const introStorageKey = 'hk-trip-intro-seen-v3'
-
-function shouldShowIntro() {
-  try {
-    const forceReplay = new URLSearchParams(window.location.search).get('intro') === '1'
-    return forceReplay || localStorage.getItem(introStorageKey) !== 'true'
-  } catch {
-    return true
-  }
-}
 
 function useLocalStorage<T>(key: string, initialValue: T) {
   const [value, setValue] = useState<T>(() => {
@@ -634,7 +624,7 @@ function formatCountdown(target: Date, now: Date) {
 }
 
 function App() {
-  const [showIntro, setShowIntro] = useState(shouldShowIntro)
+  const [showIntro, setShowIntro] = useState(true)
   const [selectedDay, setSelectedDay] = useState(defaultDayIndex)
   const [statuses, setStatuses] = useLocalStorage<Record<string, ItemStatus>>('hk-trip-statuses', {})
   const [mode, setMode] = useLocalStorage<TravelMode>('hk-trip-mode', 'normal')
@@ -696,11 +686,6 @@ function App() {
   }
 
   const dismissIntro = () => {
-    try {
-      localStorage.setItem(introStorageKey, 'true')
-    } catch {
-      // The intro can still be dismissed when browser storage is unavailable.
-    }
     shouldFocusAfterIntro.current = true
     setShowIntro(false)
   }
